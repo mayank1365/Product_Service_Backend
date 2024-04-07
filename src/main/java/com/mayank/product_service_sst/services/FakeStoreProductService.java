@@ -1,6 +1,7 @@
 package com.mayank.product_service_sst.services;
 
 import com.mayank.product_service_sst.dtos.FakeStoreProductDto;
+import com.mayank.product_service_sst.exceptions.ProductNotFoundException;
 import com.mayank.product_service_sst.models.Category;
 import com.mayank.product_service_sst.models.Product;
 import org.springframework.stereotype.Service;
@@ -15,13 +16,14 @@ public class FakeStoreProductService implements ProductService {
     @Override
     public Product getProductById(Long id) {
         ////Call the FakeStore API to get the product with give id.
+        //int x = 1/0;
         RestTemplate restTemplate = new RestTemplate();
         FakeStoreProductDto fakeStoreProductDto =
                 restTemplate.getForObject("https://fakestoreapi.com/products/" + id,
                         FakeStoreProductDto.class);
 
         if (fakeStoreProductDto == null) {
-            return null;
+            throw new ProductNotFoundException(id, "Please pass a valid productId");
         }
 
         //convert FakeStoreProductDto object to Product object.
